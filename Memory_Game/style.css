@@ -1,0 +1,17 @@
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    height: 300px;
+    width: 400px;
+    margin:auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+#result {
+    display:block;
+    text-align: center;
+    font-size: large;
+}
