@@ -82,6 +82,7 @@ body {
     width: 20px;
 }
 
+/* Squares that make up Tetromino. */
 .bottomBar {
     background-image: url(Images/yellow_block.png);
 }

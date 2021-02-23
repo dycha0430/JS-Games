@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let curIndex = 4;
     let timerId;
 
+    // Type of Tetromino.
     const LTetromino = [
         [1, width+1, width*2+1, 2], 
         [width, width+1, width+2, width*2+2],
@@ -53,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         LTetromino, ZTetromino, TTetromino, ITetromino, OTetromino
     ]
 
+    // For displaying next tetromino.
     const smallWidth = 4;
     const nextTetromino = [
         [1, smallWidth+1, smallWidth*2+1, 2], 
@@ -62,19 +64,23 @@ document.addEventListener('DOMContentLoaded', () => {
         [1, 2, smallWidth+1, smallWidth+2]
     ]
 
+    // Create grid.
     function makeBoard() {
+        // Actual game board.
         let grid = document.querySelector('.grid');
         for (let i = 0; i < width*height; ++i){
             const square = document.createElement('div');
             grid.appendChild(square);
         }
 
+        // Bottom line.
         for (let i = 0; i < width; ++i){
             const bottomSquare = document.createElement('div');
             bottomSquare.setAttribute('class', 'bottomBar');
             grid.appendChild(bottomSquare);
         }
 
+        // Next tetromino display
         let nextShape = document.querySelector('.nextShape');
         for (let i = 0; i < 16; ++i){
             const square = document.createElement('div');
@@ -84,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return grid;
     }
 
+    // Initialization.
     function init() {
         score = 0;
         result.innerText = "";
@@ -93,23 +100,27 @@ document.addEventListener('DOMContentLoaded', () => {
         makeTetromino();
     }
 
+    // Paint shape of 'tType'type and 'tNum' direction tetromino. 
     function paintTetromino() {
         Tetromino[tType][tNum].forEach(index => {
             squares[curIndex + index].classList.add(`shape${tType}`);
         });
     }
 
+    // Erase painted tetromino.
     function eraseTetromino() {
         Tetromino[tType][tNum].forEach(index => {
             squares[curIndex + index].classList.remove(`shape${tType}`);
         });
     }
 
+    // Ending game.
     function gameOver() {
         result.innerText = "GAMEOVER";
         document.removeEventListener('keydown', control);
     }
 
+    // Randomly choose next tetromino and change current tetromino.
     function makeTetromino() {
         tType = nextType;
         tNum = Math.floor(Math.random()*4);
@@ -118,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         curIndex = 4;
     }
 
+    // Start moving new tetromino.
     function startTetromino() {
         paintTetromino();
 
@@ -133,18 +145,21 @@ document.addEventListener('DOMContentLoaded', () => {
         timerId = setInterval(moveTetromino, 1000);
     }
 
+    // Erase next tetromino display.
     function eraseNextShape() {
         nextTetromino[tType].forEach(index => {
             nextShapeDisplay[index].classList.remove(`shape${tType}`);
         })
     }
 
+    // Paint next tetromino display.
     function displayNextShape() {
         nextTetromino[nextType].forEach(index => {
             nextShapeDisplay[index].classList.add(`shape${nextType}`);
         })
     }
 
+    // Stop tetromino when lower part of tetromino touched other tetromino or bottom line.
     function stopMoving() {
         let ret = false;
         Tetromino[tType][tNum].forEach(index => {
@@ -157,6 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return ret;
     }
 
+    // Lower Tetromino one space.
     function moveTetromino() {
         if (stopMoving()) {
             Tetromino[tType][tNum].forEach(index => {
@@ -176,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         paintTetromino();
     }
 
+    // Count a score when a whole line is full of squares.
     function getScore() {
         for (let i = height - 1; i >= 0; --i){
             let takeAllLine = true;
@@ -197,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Remove a line from grid.
     function removeLine(lineNum){
         const lineIndex = lineNum*width;
         for (let i = 0; i < width; ++i){
@@ -211,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         squares.forEach(cell => grid.appendChild(cell));
     }
 
+    // Move the tetromino to the right.
     function moveRight() {
         let canMove = true;
         Tetromino[tType][tNum].forEach(index => {
@@ -224,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         paintTetromino();   
     }
 
+    // Move the tetromino to the left.
     function moveLeft() {
         let canMove = true;
         Tetromino[tType][tNum].forEach(index => {
@@ -237,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         paintTetromino();   
     }
 
+    // Turn the tetromino 90 degress to the right.
     function rotate() {
         eraseTetromino();
         if (++tNum > 3) tNum = 0;
@@ -266,10 +287,12 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
     startBtn.addEventListener('click', () => {
         if (timerId) {
+            // Stop moving tetromino.
             clearInterval(timerId);
             timerId = null;
             document.removeEventListener('keydown', control);
         } else {
+            // Start moving tetromino.
             document.addEventListener('keydown', control);
             startTetromino();
         }
